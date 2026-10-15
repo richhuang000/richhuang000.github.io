@@ -1,44 +1,92 @@
-Introduction to Pandas
+## Introduction to Pandas
 
 Analyzing datasets in real-world situations often involve thousands or even millions of rows. Within these raw datasets, it is likely that the inputted data contain various inconsistencies. For example, missing data, duplicate records, trailing spaces within text, and incorrect data types are all common issues. It is virtually impossible to manually review each row and standardize the data within a reasonable time frame. Even if one manages to clean the dataset, grouping and filtering manually would require exponentially more time. Thankfully, there is a library package in Python called pandas that efficiently solves these problems. Pandas is versatile–it contains hundreds of functions and methods to handle efficient cleaning, grouping, filtering, and visualizations for massive datasets. In this tutorial, we will demonstrate useful pandas functions to address the aforementioned issues on an example dataset on General Conference talks.
 
-Structure of DataFrames
+## Structure of DataFrames
 
-	In Python and within the pandas library, data can be organized in a two-dimensional table with rows and columns called a DataFrame. Of course, one can create a two-dimensional array in Python that essentially acts just like a DataFrame. However, pandas adds functionalities that enhance and simplify data analysis, such as making row and column labels carry meaning into the code, allowing each column to have its own data type, allowing selection and alignment using row or column labels, and having function names that directly correspond to the task they perform. An example of row and column labels carrying meaning into code: There is a table called score that contains student names and three of their exam scores. Using regular Python code, one would need to remember the specific numerical index of the desired cell to access it, like score[0,1]. With pandas, one would just need to remember the column name to access the desired cell, like score[“Joe”, “final_exam”]. A Series is a one-dimensional sequence of values within a DataFrame, such as a column.
+In Python and within the pandas library, data can be organized in a two-dimensional table with rows and columns called a DataFrame. Of course, one can create a two-dimensional array in Python that essentially acts just like a DataFrame. However, pandas adds functionalities that enhance and simplify data analysis, such as making row and column labels carry meaning into the code, allowing each column to have its own data type, allowing selection and alignment using row or column labels, and having function names that directly correspond to the task they perform. An example of row and column labels carrying meaning into code: There is a table called score that contains student names and three of their exam scores. Using regular Python code, one would need to remember the specific numerical index of the desired cell to access it, like score[0,1]. With pandas, one would just need to remember the column name to access the desired cell, like score[“Joe”, “final_exam”]. A Series is a one-dimensional sequence of values within a DataFrame, such as a column.
 
-Data Analysis
+## Data Analysis
 
-	Let’s open the dataset in Positron. The function .read_csv() from pandas can import csv files into an IDE for further manipulation.
+Let’s open the dataset in Positron. The function .read_csv() from pandas can import csv files into an IDE for further manipulation.
 	
-[code block to open talks.csv]
+```{python}
+import pandas as pd
 
-	Upon inspection, we can observe that the information in the dataset includes the talk name, the speaker, which conference the talk was given, the date of the talk, the text, and many other variables. To observe if and which columns have missing data, we can use the function .isna().
+talks = pd.read_csv("data/talks.csv")
+```
 
-[code block with .isna()]
+Upon inspection, we can observe that the information in the dataset includes the talk name, the speaker, which conference the talk was given, the date of the talk, the text, and many other variables. To observe if and which columns have missing data, we can use the function isna().
 
-	The output reveals that the “runtime” column has 131 cells missing data and the “kicker” column has 2 cells missing data. Some possible solutions include filling the cells with a calculated metric like a mean or median, or removing it entirely. For this example demonstration, we will ignore these missing values as the two columns are not part of the variables we want to focus on. From here on out, we will be looking at the talk name, speaker, number of words in the talk, year, the conference the talk was given in, and the text. The code as follows will create a new DataFrame and display these variables while filtering all others out. 
+```{python}
+talks.isna().sum()
+```
 
-[code block with the filters and .copy()]
+The output reveals that the “runtime” column has 131 cells missing data and the “kicker” column has 2 cells missing data. Some possible solutions include filling the cells with a calculated metric like a mean or median, or removing it entirely. For this example demonstration, we will ignore these missing values as the two columns are not part of the variables we want to focus on. From here on out, we will be looking at the talk name, speaker, number of words in the talk, year, the conference the talk was given in, and the text. The code as follows will create a new DataFrame and display these variables while filtering all others out. 
+
+```{python}
+new_talks = talks[["talk_name", "speaker", "num_words", "year", "conference", "text"]].copy()
+
+new_talks.head()
+```
 
 Side note: The .head() function will limit the output to five rows. We can enter any number within the parentheses to specify the number of rows.
 
-	A common method for filtering is by using a boolean mask and the .loc[] function. The .loc[] function takes in a row label and a column label, or boolean conditions as its parameters. If we wanted to observe talks that occurred between 2017 to 2020, had more than 1600 words, and only display the variables mentioned above, the code to perform this is as follows.
+A common method for filtering is by using a boolean mask and the .loc[] function. The .loc[] function takes in a row label and a column label, or boolean conditions as its parameters. If we wanted to observe talks that occurred between 2017 to 2020 and had more than 1300 words, the code to perform this is as follows.
 
-[code block with masking]
+```{python}
+recent_mask = (
+	new_talks["year"].between(2017,2020) &
+	(new_talks["num_words"] > 1300)
+)
+new_talks.loc[recent_mask].head()
+```
 
-	Sorting and counting variables can be performed with the functions value_counts() and sort_values(). The function value_counts() counts how many instances a unique value appears. For example, the code that would count how many talks were in each conference is as follows.
+Sorting and counting variables can be performed with the functions value_counts() and sort_values(). The function value_counts() counts how many instances a unique value appears. For example, the code that would count how many talks were in each conference is as follows.
 
-[code block with value_counts()]
+```{python}
+new_talks['conference'].value_counts()
+```
 
-	The function sort_values() can receive two parameters: the column to order by and the order to sort them by. For example, the code that orders the DataFrame by number of words in descending order is as follows.
+The function sort_values() can receive two parameters: the column to order by and the order to sort them by. For example, the code that orders the DataFrame by number of words in descending order is as follows.
 
-[code block with value_counts()]
+```{python}
+new_talks.sort_values(by="num_words", ascending=False)
+```
 
-	Grouping and aggregating are often used in combination with the functions groupby() and agg(). The function groupby() receives a column name and specifies as_index as parameters. If as_index is true, the column name becomes an index label. If as_index is false, the column name remains a column label. The function agg() is a bit more complicated. The following code will demonstrate groupby() and agg() to produce a table that displays the mean and median number of words per talk within each conference.
+Grouping and aggregating are often used in combination with the functions groupby() and agg(). The function groupby() receives a column name and specifies as_index as parameters. If as_index is true, the column name becomes an index label. If as_index is false, the column name remains a column label. The function agg() is a bit more complicated. The following code will demonstrate groupby() and agg() to produce a table that displays the mean and median number of words per talk within each conference.
 
-[code block to demonstrate groupby() and agg()]
+```{python}
+new_talks.groupby('conference', as_index=False).agg(
+	mean_words=('num_words', 'mean'),
+    median_words=('num_words', 'median'))
+```
 
-	The parameters for agg() are the new column names and other parentheses that specify the column to calculate over and the type of aggregation. In the code block above, median_words and mean_words are the new column names, num_words is the column for calculation, and mean and median are the type of aggregations performed.
+The parameters for agg() are the new column names and other parentheses that specify the column to calculate over and the type of aggregation. In the code block above, median_words and mean_words are the new column names, num_words is the column for calculation, and mean and median are the type of aggregations performed.
+
+The function transform() can be used in conjunction with groupby() to add a new column to the original table. It takes in a form of aggregation, such as “mean” or “median,” as its parameter. The following code will demonstrate how to use transform() to create a new column that displays the median number of words per year.
+
+```{python}
+new_talks['yearly_median_words']= (
+  talks.groupby('year')['num_words'].transform('median')
+)
+```
+
+Python includes a variety of graphs and charts to visualize data, such as bar charts, line graphs, and histograms through the library matplotlib. The following code will plot the median number of words per conference over the years with a scatterplot.
+
+```{python}
+import matplotlib as plt
+
+new_talks.plot.scatter(
+   x="year", y="yearly_median_words", marker="o"
+)
+
+```
+
+
+## Conclusion
+
+We’ve explored some of the most basic and commonly used functions in pandas, but there is still much more to be explored. Continuing to practice data analysis with these tools on other datasets is the surefire way to increase efficiency, accuracy, and confidence as an analyst. There are many more functions in pandas that are extremely helpful in data analysis. It is encouraged that the reader conducts further research into these functions to strengthen their skills and knowledge.
 
 
 
