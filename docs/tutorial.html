@@ -26,10 +26,45 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -73,6 +108,9 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
 <link rel="stylesheet" href="styles.css">
@@ -105,7 +143,7 @@ ul.task-list li input[type="checkbox"] {
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="./tutorial.html" aria-current="page"> 
-<span class="menu-text">tutorial.html</span></a>
+<span class="menu-text">Introduction to Pandas</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -118,38 +156,565 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#structure-of-dataframes" id="toc-structure-of-dataframes" class="nav-link active" data-scroll-target="#structure-of-dataframes">Structure of DataFrames</a></li>
+  <li><a href="#data-analysis" id="toc-data-analysis" class="nav-link" data-scroll-target="#data-analysis">Data Analysis</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Introduction to Pandas</h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
 
-<p>Introduction to Pandas</p>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
 <p>Analyzing datasets in real-world situations often involve thousands or even millions of rows. Within these raw datasets, it is likely that the inputted data contain various inconsistencies. For example, missing data, duplicate records, trailing spaces within text, and incorrect data types are all common issues. It is virtually impossible to manually review each row and standardize the data within a reasonable time frame. Even if one manages to clean the dataset, grouping and filtering manually would require exponentially more time. Thankfully, there is a library package in Python called pandas that efficiently solves these problems. Pandas is versatile–it contains hundreds of functions and methods to handle efficient cleaning, grouping, filtering, and visualizations for massive datasets. In this tutorial, we will demonstrate useful pandas functions to address the aforementioned issues on an example dataset on General Conference talks.</p>
-<p>Structure of DataFrames</p>
-<pre><code>In Python and within the pandas library, data can be organized in a two-dimensional table with rows and columns called a DataFrame. Of course, one can create a two-dimensional array in Python that essentially acts just like a DataFrame. However, pandas adds functionalities that enhance and simplify data analysis, such as making row and column labels carry meaning into the code, allowing each column to have its own data type, allowing selection and alignment using row or column labels, and having function names that directly correspond to the task they perform. An example of row and column labels carrying meaning into code: There is a table called score that contains student names and three of their exam scores. Using regular Python code, one would need to remember the specific numerical index of the desired cell to access it, like score[0,1]. With pandas, one would just need to remember the column name to access the desired cell, like score[“Joe”, “final_exam”]. A Series is a one-dimensional sequence of values within a DataFrame, such as a column.</code></pre>
-<p>Data Analysis</p>
-<pre><code>Let’s open the dataset in Positron. The function .read_csv() from pandas can import csv files into an IDE for further manipulation.</code></pre>
-<p>[code block to open talks.csv]</p>
-<pre><code>Upon inspection, we can observe that the information in the dataset includes the talk name, the speaker, which conference the talk was given, the date of the talk, the text, and many other variables. To observe if and which columns have missing data, we can use the function .isna().</code></pre>
-<p>[code block with .isna()]</p>
-<pre><code>The output reveals that the “runtime” column has 131 cells missing data and the “kicker” column has 2 cells missing data. Some possible solutions include filling the cells with a calculated metric like a mean or median, or removing it entirely. For this example demonstration, we will ignore these missing values as the two columns are not part of the variables we want to focus on. From here on out, we will be looking at the talk name, speaker, number of words in the talk, year, the conference the talk was given in, and the text. The code as follows will create a new DataFrame and display these variables while filtering all others out. </code></pre>
-<p>[code block with the filters and .copy()]</p>
+<section id="structure-of-dataframes" class="level2">
+<h2 class="anchored" data-anchor-id="structure-of-dataframes">Structure of DataFrames</h2>
+<p>In Python and within the pandas library, data can be organized in a two-dimensional table with rows and columns called a DataFrame. Of course, one can create a two-dimensional array in Python that essentially acts just like a DataFrame. However, pandas adds functionalities that enhance and simplify data analysis, such as making row and column labels carry meaning into the code, allowing each column to have its own data type, allowing selection and alignment using row or column labels, and having function names that directly correspond to the task they perform. An example of row and column labels carrying meaning into code: There is a table called score that contains student names and three of their exam scores. Using regular Python code, one would need to remember the specific numerical index of the desired cell to access it, like score[0,1]. With pandas, one would just need to remember the column name to access the desired cell, like score[“Joe”, “final_exam”]. A Series is a one-dimensional sequence of values within a DataFrame, such as a column.</p>
+</section>
+<section id="data-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="data-analysis">Data Analysis</h2>
+<p>Let’s open the dataset in Positron. The function .read_csv() from pandas can import csv files into an IDE for further manipulation.</p>
+<div id="f80d87cb" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>talks <span class="op">=</span> pd.read_csv(<span class="st">"data/talks.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Upon inspection, we can observe that the information in the dataset includes the talk name, the speaker, which conference the talk was given, the date of the talk, the text, and many other variables. To observe if and which columns have missing data, we can use the function isna().</p>
+<div id="3565eb6c" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>talks.isna().<span class="bu">sum</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<pre><code>talk_name          0
+speaker            0
+session            0
+date               0
+month              0
+year               0
+conference         0
+role               0
+speaker_order      0
+num_words          0
+runtime          131
+talk_number        0
+link               0
+kicker             2
+text               0
+dtype: int64</code></pre>
+</div>
+</div>
+<p>The output reveals that the “runtime” column has 131 cells missing data and the “kicker” column has 2 cells missing data. Some possible solutions include filling the cells with a calculated metric like a mean or median, or removing it entirely. For this example demonstration, we will ignore these missing values as the two columns are not part of the variables we want to focus on. From here on out, we will be looking at the talk name, speaker, number of words in the talk, year, the conference the talk was given in, and the text. The code as follows will create a new DataFrame and display these variables while filtering all others out.</p>
+<div id="e98d104f" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>new_talks <span class="op">=</span> talks[[<span class="st">"talk_name"</span>, <span class="st">"speaker"</span>, <span class="st">"num_words"</span>, <span class="st">"year"</span>, <span class="st">"conference"</span>, <span class="st">"text"</span>]].copy()</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>new_talks.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">talk_name</th>
+<th data-quarto-table-cell-role="th">speaker</th>
+<th data-quarto-table-cell-role="th">num_words</th>
+<th data-quarto-table-cell-role="th">year</th>
+<th data-quarto-table-cell-role="th">conference</th>
+<th data-quarto-table-cell-role="th">text</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>Finding Joy in Christ</td>
+<td>Steven J. Lund</td>
+<td>1514</td>
+<td>2020</td>
+<td>October 2020</td>
+<td>The Lord does not ask our Aaronic Priesthood y...</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>The Culture of Christ</td>
+<td>William K. Jackson</td>
+<td>1500</td>
+<td>2020</td>
+<td>October 2020</td>
+<td>What a magnificent world we live in and share,...</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>Let Patience Have Her Perfect Work, and Count ...</td>
+<td>Jeremy R. Jaggi</td>
+<td>1492</td>
+<td>2020</td>
+<td>October 2020</td>
+<td>Two years ago, my youngest brother, Chad, step...</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>Ask, Seek, and Knock</td>
+<td>Milton Camargo</td>
+<td>1484</td>
+<td>2020</td>
+<td>October 2020</td>
+<td>Four months ago, in my study of the scriptures...</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>Enduring Power</td>
+<td>Kelly R. Johnson</td>
+<td>1430</td>
+<td>2020</td>
+<td>October 2020</td>
+<td>In reviewing the teachings of our dear prophet...</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
 <p>Side note: The .head() function will limit the output to five rows. We can enter any number within the parentheses to specify the number of rows.</p>
-<pre><code>A common method for filtering is by using a boolean mask and the .loc[] function. The .loc[] function takes in a row label and a column label, or boolean conditions as its parameters. If we wanted to observe talks that occurred between 2017 to 2020, had more than 1600 words, and only display the variables mentioned above, the code to perform this is as follows.</code></pre>
-<p>[code block with masking]</p>
-<pre><code>Sorting and counting variables can be performed with the functions value_counts() and sort_values(). The function value_counts() counts how many instances a unique value appears. For example, the code that would count how many talks were in each conference is as follows.</code></pre>
-<p>[code block with value_counts()]</p>
-<pre><code>The function sort_values() can receive two parameters: the column to order by and the order to sort them by. For example, the code that orders the DataFrame by number of words in descending order is as follows.</code></pre>
-<p>[code block with value_counts()]</p>
-<pre><code>Grouping and aggregating are often used in combination with the functions groupby() and agg(). The function groupby() receives a column name and specifies as_index as parameters. If as_index is true, the column name becomes an index label. If as_index is false, the column name remains a column label. The function agg() is a bit more complicated. The following code will demonstrate groupby() and agg() to produce a table that displays the mean and median number of words per talk within each conference.</code></pre>
-<p>[code block to demonstrate groupby() and agg()]</p>
-<pre><code>The parameters for agg() are the new column names and other parentheses that specify the column to calculate over and the type of aggregation. In the code block above, median_words and mean_words are the new column names, num_words is the column for calculation, and mean and median are the type of aggregations performed.</code></pre>
+<p>A common method for filtering is by using a boolean mask and the .loc[] function. The .loc[] function takes in a row label and a column label, or boolean conditions as its parameters. If we wanted to observe talks that occurred between 2017 to 2020 and had more than 1300 words, the code to perform this is as follows.</p>
+<div id="6ae4564a" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>recent_mask <span class="op">=</span> (</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    new_talks[<span class="st">"year"</span>].between(<span class="dv">2017</span>,<span class="dv">2020</span>) <span class="op">&amp;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    (new_talks[<span class="st">"num_words"</span>] <span class="op">&gt;</span> <span class="dv">1300</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>new_talks.loc[recent_mask].head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<div>
 
 
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">talk_name</th>
+<th data-quarto-table-cell-role="th">speaker</th>
+<th data-quarto-table-cell-role="th">num_words</th>
+<th data-quarto-table-cell-role="th">year</th>
+<th data-quarto-table-cell-role="th">conference</th>
+<th data-quarto-table-cell-role="th">text</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>Finding Joy in Christ</td>
+<td>Steven J. Lund</td>
+<td>1514</td>
+<td>2020</td>
+<td>October 2020</td>
+<td>The Lord does not ask our Aaronic Priesthood y...</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>The Culture of Christ</td>
+<td>William K. Jackson</td>
+<td>1500</td>
+<td>2020</td>
+<td>October 2020</td>
+<td>What a magnificent world we live in and share,...</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>Let Patience Have Her Perfect Work, and Count ...</td>
+<td>Jeremy R. Jaggi</td>
+<td>1492</td>
+<td>2020</td>
+<td>October 2020</td>
+<td>Two years ago, my youngest brother, Chad, step...</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>Ask, Seek, and Knock</td>
+<td>Milton Camargo</td>
+<td>1484</td>
+<td>2020</td>
+<td>October 2020</td>
+<td>Four months ago, in my study of the scriptures...</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>Enduring Power</td>
+<td>Kelly R. Johnson</td>
+<td>1430</td>
+<td>2020</td>
+<td>October 2020</td>
+<td>In reviewing the teachings of our dear prophet...</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Sorting and counting variables can be performed with the functions value_counts() and sort_values(). The function value_counts() counts how many instances a unique value appears. For example, the code that would count how many talks were in each conference is as follows.</p>
+<div id="0c69b626" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>new_talks[<span class="st">'conference'</span>].value_counts()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<pre><code>conference
+October 2015    39
+October 2014    38
+October 2013    38
+October 2012    38
+October 2011    38
+October 2010    38
+October 2016    37
+April 2014      37
+April 2013      37
+April 2012      37
+April 2011      37
+April 2010      37
+April 2018      36
+April 2017      36
+April 2015      36
+October 2017    35
+April 2016      35
+October 2020    34
+October 2019    34
+April 2020      33
+October 2018    33
+April 2019      31
+Name: count, dtype: int64</code></pre>
+</div>
+</div>
+<p>The function sort_values() can receive two parameters: the column to order by and the order to sort them by. For example, the code that orders the DataFrame by number of words in descending order is as follows.</p>
+<div id="9e3d622f" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>new_talks.sort_values(by<span class="op">=</span><span class="st">"num_words"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">talk_name</th>
+<th data-quarto-table-cell-role="th">speaker</th>
+<th data-quarto-table-cell-role="th">num_words</th>
+<th data-quarto-table-cell-role="th">year</th>
+<th data-quarto-table-cell-role="th">conference</th>
+<th data-quarto-table-cell-role="th">text</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">502</th>
+<td>Your Wonderful Journey Home</td>
+<td>Dieter F. Uchtdorf</td>
+<td>2802</td>
+<td>2013</td>
+<td>April 2013</td>
+<td>We are honored this evening with the presence ...</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">567</th>
+<td>Help Them Aim High</td>
+<td>Henry B. Eyring</td>
+<td>2727</td>
+<td>2012</td>
+<td>October 2012</td>
+<td>I’m so grateful for this opportunity to be in ...</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">535</th>
+<td>A Living Testimony</td>
+<td>Henry B. Eyring</td>
+<td>2719</td>
+<td>2011</td>
+<td>April 2011</td>
+<td>My beloved young sisters, you are the bright h...</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">574</th>
+<td>The Caregiver</td>
+<td>Henry B. Eyring</td>
+<td>2709</td>
+<td>2012</td>
+<td>October 2012</td>
+<td>I am grateful to be in your company tonight. T...</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">755</th>
+<td>Dare to Stand Alone</td>
+<td>Thomas S. Monson</td>
+<td>2691</td>
+<td>2011</td>
+<td>October 2011</td>
+<td>My beloved brethren, it is a tremendous privil...</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">...</th>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">793</th>
+<td>The Power of the Book of Mormon</td>
+<td>Thomas S. Monson</td>
+<td>408</td>
+<td>2017</td>
+<td>April 2017</td>
+<td>My dear brothers and sisters, I greet you most...</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">792</th>
+<td>Kindness, Charity, and Love</td>
+<td>Thomas S. Monson</td>
+<td>407</td>
+<td>2017</td>
+<td>April 2017</td>
+<td>My dear brethren, I am honored by the privileg...</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">772</th>
+<td>Till We Meet Again</td>
+<td>Thomas S. Monson</td>
+<td>339</td>
+<td>2013</td>
+<td>October 2013</td>
+<td>My brothers and sisters, my heart is full as w...</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">731</th>
+<td>Hosanna Shout</td>
+<td>Russell M. Nelson</td>
+<td>269</td>
+<td>2020</td>
+<td>April 2020</td>
+<td>Now, my dear brothers and sisters, as we comme...</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">657</th>
+<td>Ministering</td>
+<td>Russell M. Nelson</td>
+<td>243</td>
+<td>2018</td>
+<td>April 2018</td>
+<td>Thank you, Elder Gong and Elder Soares, for yo...</td>
+</tr>
+</tbody>
+</table>
+
+<p>794 rows × 6 columns</p>
+</div>
+</div>
+</div>
+<p>Grouping and aggregating are often used in combination with the functions groupby() and agg(). The function groupby() receives a column name and specifies as_index as parameters. If as_index is true, the column name becomes an index label. If as_index is false, the column name remains a column label. The function agg() is a bit more complicated. The following code will demonstrate groupby() and agg() to produce a table that displays the mean and median number of words per talk within each conference.</p>
+<div id="77785493" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>new_talks.groupby(<span class="st">'conference'</span>, as_index<span class="op">=</span><span class="va">False</span>).agg(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    mean_words<span class="op">=</span>(<span class="st">'num_words'</span>, <span class="st">'mean'</span>),</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    median_words<span class="op">=</span>(<span class="st">'num_words'</span>, <span class="st">'median'</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">conference</th>
+<th data-quarto-table-cell-role="th">mean_words</th>
+<th data-quarto-table-cell-role="th">median_words</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>April 2010</td>
+<td>1797.810811</td>
+<td>1831.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>April 2011</td>
+<td>1801.081081</td>
+<td>1743.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>April 2012</td>
+<td>1750.378378</td>
+<td>1756.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>April 2013</td>
+<td>1726.351351</td>
+<td>1711.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>April 2014</td>
+<td>1649.729730</td>
+<td>1642.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>April 2015</td>
+<td>1707.444444</td>
+<td>1673.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6</th>
+<td>April 2016</td>
+<td>1650.428571</td>
+<td>1687.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">7</th>
+<td>April 2017</td>
+<td>1671.055556</td>
+<td>1631.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">8</th>
+<td>April 2018</td>
+<td>1518.861111</td>
+<td>1605.5</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">9</th>
+<td>April 2019</td>
+<td>1705.064516</td>
+<td>1739.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">10</th>
+<td>April 2020</td>
+<td>1647.181818</td>
+<td>1790.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">11</th>
+<td>October 2010</td>
+<td>1771.578947</td>
+<td>1856.5</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">12</th>
+<td>October 2011</td>
+<td>1787.578947</td>
+<td>1846.5</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">13</th>
+<td>October 2012</td>
+<td>1798.578947</td>
+<td>1775.5</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">14</th>
+<td>October 2013</td>
+<td>1687.947368</td>
+<td>1730.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">15</th>
+<td>October 2014</td>
+<td>1657.710526</td>
+<td>1657.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">16</th>
+<td>October 2015</td>
+<td>1617.000000</td>
+<td>1593.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">17</th>
+<td>October 2016</td>
+<td>1682.567568</td>
+<td>1682.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">18</th>
+<td>October 2017</td>
+<td>1797.800000</td>
+<td>1778.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">19</th>
+<td>October 2018</td>
+<td>1673.151515</td>
+<td>1654.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">20</th>
+<td>October 2019</td>
+<td>1612.029412</td>
+<td>1575.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">21</th>
+<td>October 2020</td>
+<td>1566.176471</td>
+<td>1553.5</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>The parameters for agg() are the new column names and other parentheses that specify the column to calculate over and the type of aggregation. In the code block above, median_words and mean_words are the new column names, num_words is the column for calculation, and mean and median are the type of aggregations performed.</p>
+<p>The function transform() can be used in conjunction with groupby() to add a new column to the original table. It takes in a form of aggregation, such as “mean” or “median,” as its parameter. The following code will demonstrate how to use transform() to create a new column that displays the median number of words per year.</p>
+<div id="bf4899b2" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>new_talks[<span class="st">'yearly_median_words'</span>]<span class="op">=</span> (</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  talks.groupby(<span class="st">'year'</span>)[<span class="st">'num_words'</span>].transform(<span class="st">'median'</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Python includes a variety of graphs and charts to visualize data, such as bar charts, line graphs, and histograms through the library matplotlib. The following code will plot the median number of words per conference over the years with a scatterplot.</p>
+<div id="cb96c7d3" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib <span class="im">as</span> plt</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>new_talks.plot.scatter(</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>   x<span class="op">=</span><span class="st">"year"</span>, y<span class="op">=</span><span class="st">"yearly_median_words"</span>, marker<span class="op">=</span><span class="st">"o"</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="tutorial_files/figure-html/cell-10-output-1.png" width="602" height="430" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>We’ve explored some of the most basic and commonly used functions in pandas, but there is still much more to be explored. Continuing to practice data analysis with these tools on other datasets is the surefire way to increase efficiency, accuracy, and confidence as an analyst. There are many more functions in pandas that are extremely helpful in data analysis. It is encouraged that the reader conducts further research into these functions to strengthen their skills and knowledge.</p>
+
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
