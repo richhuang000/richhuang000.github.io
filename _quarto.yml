@@ -8,11 +8,12 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - about.qmd
+      - href: about.qmd
+        text: About
       - href: tutorial.qmd
         text: Tutorial Blog
       - href: data_acquisition.qmd
-      - text: Data Acquisition Blog
+        text: Data Acquisition Blog
 
 format:
   html:

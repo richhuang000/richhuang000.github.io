@@ -110,10 +110,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 <script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
 
-
-
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
-
 
 
 <link rel="stylesheet" href="styles.css">
@@ -142,11 +139,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./about.html"> 
-<span class="menu-text">about.html</span></a>
+<span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="./tutorial.html" aria-current="page"> 
-<span class="menu-text">Introduction to Pandas</span></a>
+<span class="menu-text">Tutorial Blog</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./data_acquisition.html"> 
+<span class="menu-text">Data Acquisition Blog</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -200,13 +201,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="data-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="data-analysis">Data Analysis</h2>
 <p>Let’s open the dataset in Positron. The function .read_csv() from pandas can import csv files into an IDE for further manipulation.</p>
-<div id="f80d87cb" class="cell" data-execution_count="1">
+<div id="54f19b2d" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>talks <span class="op">=</span> pd.read_csv(<span class="st">"data/talks.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Upon inspection, we can observe that the information in the dataset includes the talk name, the speaker, which conference the talk was given, the date of the talk, the text, and many other variables. To observe if and which columns have missing data, we can use the function isna().</p>
-<div id="3565eb6c" class="cell" data-execution_count="2">
+<div id="dea9cbe9" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>talks.isna().<span class="bu">sum</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="2">
 <pre><code>talk_name          0
@@ -228,7 +229,7 @@ dtype: int64</code></pre>
 </div>
 </div>
 <p>The output reveals that the “runtime” column has 131 cells missing data and the “kicker” column has 2 cells missing data. Some possible solutions include filling the cells with a calculated metric like a mean or median, or removing it entirely. For this example demonstration, we will ignore these missing values as the two columns are not part of the variables we want to focus on. From here on out, we will be looking at the talk name, speaker, number of words in the talk, year, the conference the talk was given in, and the text. The code as follows will create a new DataFrame and display these variables while filtering all others out.</p>
-<div id="e98d104f" class="cell" data-execution_count="3">
+<div id="894524dc" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>new_talks <span class="op">=</span> talks[[<span class="st">"talk_name"</span>, <span class="st">"speaker"</span>, <span class="st">"num_words"</span>, <span class="st">"year"</span>, <span class="st">"conference"</span>, <span class="st">"text"</span>]].copy()</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>new_talks.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -302,7 +303,7 @@ dtype: int64</code></pre>
 </div>
 <p>Side note: The .head() function will limit the output to five rows. We can enter any number within the parentheses to specify the number of rows.</p>
 <p>A common method for filtering is by using a boolean mask and the .loc[] function. The .loc[] function takes in a row label and a column label, or boolean conditions as its parameters. If we wanted to observe talks that occurred between 2017 to 2020 and had more than 1300 words, the code to perform this is as follows.</p>
-<div id="6ae4564a" class="cell" data-execution_count="4">
+<div id="cbc60b3c" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>recent_mask <span class="op">=</span> (</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    new_talks[<span class="st">"year"</span>].between(<span class="dv">2017</span>,<span class="dv">2020</span>) <span class="op">&amp;</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    (new_talks[<span class="st">"num_words"</span>] <span class="op">&gt;</span> <span class="dv">1300</span>)</span>
@@ -377,7 +378,7 @@ dtype: int64</code></pre>
 </div>
 </div>
 <p>Sorting and counting variables can be performed with the functions value_counts() and sort_values(). The function value_counts() counts how many instances a unique value appears. For example, the code that would count how many talks were in each conference is as follows.</p>
-<div id="0c69b626" class="cell" data-execution_count="5">
+<div id="53b38582" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>new_talks[<span class="st">'conference'</span>].value_counts()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>conference
@@ -407,7 +408,7 @@ Name: count, dtype: int64</code></pre>
 </div>
 </div>
 <p>The function sort_values() can receive two parameters: the column to order by and the order to sort them by. For example, the code that orders the DataFrame by number of words in descending order is as follows.</p>
-<div id="9e3d622f" class="cell" data-execution_count="6">
+<div id="2c3815fd" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>new_talks.sort_values(by<span class="op">=</span><span class="st">"num_words"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="6">
 <div>
@@ -533,7 +534,7 @@ Name: count, dtype: int64</code></pre>
 </div>
 </div>
 <p>Grouping and aggregating are often used in combination with the functions groupby() and agg(). The function groupby() receives a column name and specifies as_index as parameters. If as_index is true, the column name becomes an index label. If as_index is false, the column name remains a column label. The function agg() is a bit more complicated. The following code will demonstrate groupby() and agg() to produce a table that displays the mean and median number of words per talk within each conference.</p>
-<div id="77785493" class="cell" data-execution_count="7">
+<div id="fa16f3f9" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>new_talks.groupby(<span class="st">'conference'</span>, as_index<span class="op">=</span><span class="va">False</span>).agg(</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    mean_words<span class="op">=</span>(<span class="st">'num_words'</span>, <span class="st">'mean'</span>),</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    median_words<span class="op">=</span>(<span class="st">'num_words'</span>, <span class="st">'median'</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -691,13 +692,13 @@ Name: count, dtype: int64</code></pre>
 </div>
 <p>The parameters for agg() are the new column names and other parentheses that specify the column to calculate over and the type of aggregation. In the code block above, median_words and mean_words are the new column names, num_words is the column for calculation, and mean and median are the type of aggregations performed.</p>
 <p>The function transform() can be used in conjunction with groupby() to add a new column to the original table. It takes in a form of aggregation, such as “mean” or “median,” as its parameter. The following code will demonstrate how to use transform() to create a new column that displays the median number of words per year.</p>
-<div id="bf4899b2" class="cell" data-execution_count="8">
+<div id="2d205533" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>new_talks[<span class="st">'yearly_median_words'</span>]<span class="op">=</span> (</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  talks.groupby(<span class="st">'year'</span>)[<span class="st">'num_words'</span>].transform(<span class="st">'median'</span>)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Python includes a variety of graphs and charts to visualize data, such as bar charts, line graphs, and histograms through the library matplotlib. The following code will plot the median number of words per conference over the years with a scatterplot.</p>
-<div id="cb96c7d3" class="cell" data-execution_count="9">
+<div id="a53f853d" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib <span class="im">as</span> plt</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>new_talks.plot.scatter(</span>
