@@ -16,7 +16,7 @@ To get started on using an API, it’s important to first read their terms of se
 
 Note: The code is commented out to simply demonstrate syntax.
 
-The get() function under the requests library retrieves data from a website that we can further manipulate in Python. It can receive two parameters: the URL and parameters to be appended to the URL. The URL parameter to enter is typically adding “api” before the URL of the website you want to scrape. For this project, the URL I entered is “https://api.themoviedb.org/3/movie/top_rated". The second parameter, “params,” is a dictionary with values that is appended to the URL in the first parameter so the get() function can retrieve that specific page. To transform the object created from the get() function into a DataFrame, we can first use the json() function to translate the object into a JSON object. The new JSON object looks very similar to a dictionary, so we typically can find the variables and their corresponding values in the “value” component. For this project, the variables and their values were under the “results” key.
+The get() function under the requests library retrieves data from a website that we can further manipulate in Python. It can receive two parameters: the URL and parameters to be appended to the URL. The URL parameter to enter is typically adding “api” before the URL of the website you want to scrape. For this project, the URL I entered is “https://api.themoviedb.org/3/movie/top_rated". The second parameter, “params,” is a dictionary with values that is appended to the URL in the first parameter so the get() function can retrieve that specific page. For further details regarding the code, please visit the GitHub repository to my project linked at the bottom of this blog. To transform the object created from the get() function into a DataFrame, we can first use the json() function to translate the object into a JSON object. The new JSON object looks very similar to a dictionary, so we typically can find the variables and their corresponding values in the “value” component. For this project, the variables and their values were under the “results” key.
 
 ```{json}
 {'page': 13,
@@ -45,10 +45,18 @@ We can append these values into a list, then use the pandas function pd.DataFram
 ## EDA Highlights
 
 The cleaned dataset includes 200 observations and five variables. I chose to include the movie title, year released, synopsis, genre, and user rating. Here are some interesting findings after exploring the dataset:
+
 1. Three of the top five highest rated movies are animated.
+
 2. Among the 200 movies, drama and animated films dominate over half   the list with 67 drama films and 37 animated films.
+
+![Genre Counts](images/genre_counts.png)
+
 3. Among the 200 movies, more films came from the year 2026 than any other year (21). The results may speak to recency bias or lack of user ratings that inflate its score.
+
 4. Among the 200 movies, western, adventure, and fantasy films have the highest mean ratings. However, there is only one western film in the dataset, so that point is very skewed.
+
+![Average Rating](images/average_rating_by_genre.png)
 
 ## Links
 
