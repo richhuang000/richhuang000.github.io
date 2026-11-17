@@ -14,6 +14,8 @@ website:
         text: Tutorial Blog
       - href: data_acquisition.qmd
         text: Data Acquisition Blog
+      - href: book_report.qmd
+        text: Book Report
 
 format:
   html:
